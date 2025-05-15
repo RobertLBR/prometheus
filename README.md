@@ -1,5 +1,9 @@
 # prometheus
-prometheus监控系统部署
+## prometheus监控系统部署
+```
+docker-compose up -d
+```
+
 
 
 ## 部署exporter
