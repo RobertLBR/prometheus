@@ -34,8 +34,9 @@ scrape_configs:
         services: ['node-exporter']
     relabel_configs:
       - source_labels: [__meta_consul_tags]
-        regex: 'instance=(.+)'
+        regex: '.*instance=([^;,]+).*'  # 匹配直到遇到分号或逗号为止
         target_label: instance
+        replacement: '$1'  # 仅保留捕获组内容
 
   - job_name: 'mysql-exporter'
     consul_sd_configs:
@@ -43,8 +44,9 @@ scrape_configs:
         services: ['mysql-exporter']
     relabel_configs:
       - source_labels: [__meta_consul_tags]
-        regex: 'instance=(.+)'
+        regex: '.*instance=([^;,]+).*'  # 匹配直到遇到分号或逗号为止
         target_label: instance
+        replacement: '$1'  # 仅保留捕获组内容
 
   - job_name: 'docker-exporter'
     consul_sd_configs:
@@ -52,6 +54,7 @@ scrape_configs:
         services: ['docker-exporter']
     relabel_configs:
       - source_labels: [__meta_consul_tags]
-        regex: 'instance=(.+)'
+        regex: '.*instance=([^;,]+).*'  # 匹配直到遇到分号或逗号为止
         target_label: instance
+        replacement: '$1'  # 仅保留捕获组内容
         

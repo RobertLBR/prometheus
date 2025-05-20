@@ -1,0 +1,6 @@
+# 忽略 consul/data 目录及其内容
+consul/data/
+# 忽略 grafana/data 目录及其内容
+grafana/data/
+# 忽略 prometheus/data 目录及其内容
+prometheus/data/
