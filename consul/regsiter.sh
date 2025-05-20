@@ -32,19 +32,6 @@ curl -X PUT http://172.16.100.98:8500/v1/agent/service/register -H "Content-Type
 }'
 
 ###### docker-exporter
-# 注册 etl 的docker监控实例
-curl -X PUT http://172.16.100.98:8500/v1/agent/service/register -H "Content-Type: application/json" -d '{
-  "id": "docker-exporter-etl",
-  "name": "docker-exporter",
-  "address": "172.16.100.90",
-  "port": 38080,
-  "tags": ["instance=etl"],
-  "checks": [{
-    "http": "http://172.16.100.90:38080/metrics",
-    "interval": "15s"
-  }]
-}'
-
 # 注册 ai 的docker监控实例
 curl -X PUT http://172.16.100.98:8500/v1/agent/service/register -H "Content-Type: application/json" -d '{
   "id": "docker-exporter-ai-01",
@@ -58,15 +45,17 @@ curl -X PUT http://172.16.100.98:8500/v1/agent/service/register -H "Content-Type
   }]
 }'
 
-# 注册 dev 的docker监控实例
+# 注册 ai-02 的docker监控实例
+instance="ai-02"
+IP="172.16.100.97"
 curl -X PUT http://172.16.100.98:8500/v1/agent/service/register -H "Content-Type: application/json" -d '{
-  "id": "docker-exporter-dev",
+  "id": "docker-exporter-'"${instance}"'",
   "name": "docker-exporter",
-  "address": "172.16.100.50",
+  "address": "'"${IP}"'",
   "port": 38080,
-  "tags": ["instance=dev"],
+  "tags": ["instance='"${instance}"'"],
   "checks": [{
-    "http": "http://172.16.100.50:38080/metrics",
+    "http": "http://'"${IP}"':38080/metrics",
     "interval": "15s"
   }]
 }'
