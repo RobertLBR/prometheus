@@ -1,0 +1,11 @@
+groups:
+- name: host-alerts
+  rules:
+  - alert: HostDown
+    expr: up{job="node-exporter"} == 0  # 检测服务是否下线
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{{ $labels.instance }} 已停止运行"
+      description: "服务 {{ $labels.job }} 超过 1 分钟无响应"

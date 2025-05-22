@@ -1,0 +1,60 @@
+groups:
+- name: docker-alerts
+  rules:
+  - alert: ContainerDown
+    expr: time() - container_last_seen{name!=""} > 300  # 容器5分钟未上报数据
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "容器 {{ $labels.name }} 已失联"
+      description: "实例 {{ $labels.instance }} 的容器 {{ $labels.name }} 超过5分钟未上报数据，最后活跃时间：{{ $value }}秒前"
+
+  - alert: HighCpuUsage
+    expr: sum(rate(container_cpu_usage_seconds_total{name!=""}[5m])) by (instance, name) * 100 > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "容器 {{ $labels.name }} CPU使用率过高"
+      description: "实例 {{ $labels.instance }} 的容器 {{ $labels.name }} 当前CPU使用率 {{ $value | printf `%.2f` }}%，持续超过80%"      
+
+  - alert: HighMemoryUsage
+    expr: >
+      (container_memory_working_set_bytes{name!=""} / on(name,instance) 
+      container_spec_memory_limit_bytes{name!=""}) * 100 > 90
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "容器 {{ $labels.name }} 内存即将耗尽"
+      description: |
+        实例 {{ $labels.instance }} 的容器 {{ $labels.name }} 
+        内存使用率已达 {{ printf "%.2f" $value }}%（阈值：90%）
+
+  - alert: DiskPressure
+    expr: (container_fs_usage_bytes{device=~"/dev/.*"} / container_fs_limit_bytes{device=~"/dev/.*"}) * 100 > 85
+    for: 30m
+    labels:
+      severity: warning
+    annotations:
+      summary: "容器 {{ $labels.name }} 存储空间不足"
+      description: "挂载点 {{ $labels.device }} 使用率已达 {{ $value | printf `%.2f` }}%"
+
+  - alert: NetworkTrafficSpike
+    expr: rate(container_network_receive_bytes_total{name!=""}[5m]) > 100000000  # 接收速率>100MB/s or rate(container_network_transmit_bytes_total{name!=""}[5m]) > 50000000   # 发送速率>50MB/s
+    for: 3m
+    labels:
+      severity: warning
+    annotations:
+      summary: "容器 {{ $labels.name }} 网络流量异常"
+      description: "实例 {{ $labels.instance }} 的网络{{ $labels.direction }}流量达到 {{ $value | humanize }}B/s"      
+
+  - alert: ContainerRestarts
+    expr: changes(container_start_time_seconds{name!=""}[1h]) > 3
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "容器 {{ $labels.name }} 频繁重启"
+      description: "过去1小时内重启次数：{{ $value }}次"      
