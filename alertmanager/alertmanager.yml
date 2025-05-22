@@ -3,7 +3,7 @@ global:
   smtp_smarthost: 'smtp.163.com:465'    
   smtp_from: 'guiderankdev@163.com'       # 发件人
   smtp_auth_username: 'guiderankdev@163.com'
-  smtp_auth_password: 'UDOLDMJQXUHEGSHC'  # 邮箱授权码（非登录密码）
+  smtp_auth_password: '替换'  # 邮箱授权码（非登录密码）
   smtp_require_tls: false              # 关闭 TLS 加密
 
 route:
