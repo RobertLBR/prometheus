@@ -21,6 +21,9 @@ sudo docker run -d \
   --device=/dev/kmsg \
   gcr.io/cadvisor/cadvisor:v0.47.2
 
+# 好用的cadvisor-docker 仪表板ID
+# 13946、14282、11600
+
 # 批量注册上consul
 host_name=$(hostname)
 host_addr=$(ip add | grep 172.16.10 | awk '{print $2}' | cut -d / -f 1)
